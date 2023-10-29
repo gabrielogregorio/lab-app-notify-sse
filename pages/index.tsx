@@ -1,7 +1,10 @@
-import { useGetUsers } from "@/core/hooks/useGetUsers";
+import { useGetUsers } from "../core/useGetUsers";
 import { UserLogged } from "@/core/userLogged";
-import Link from "next/link";
+import { Link } from "../components/link";
 import { useRouter } from "next/router";
+import { Button } from "../components/button";
+import { Text } from "../components/text";
+import { ApiService } from "../core/apiService";
 
 export default function Login() {
   const router = useRouter();
@@ -12,47 +15,48 @@ export default function Login() {
     router.push("/home");
   };
 
+  const destroyAllNotifications = () => {
+    ApiService.get("/clearNotify");
+  };
+
   return (
     <div className="flex flex-col items-center justify-center pt-[5rem] pb-[5rem] min-h-screen">
-      <h2 className="mt-2">Choice a user to make login</h2>
+      <Text as="h1" className="mt-2">
+        Log in as a user to test notification collection
+      </Text>
 
-      <div>{usersIsLoading ? "loading users available..." : ""}</div>
-      <div>{usersError ? usersError : ""}</div>
+      <div className="mt-2">
+        <div>{usersIsLoading ? "loading users available..." : ""}</div>
+        <div>{usersError ? usersError : ""}</div>
 
-      <div className="flex gap-4">
-        {users.map((user) => {
-          return (
-            <button
-              type="button"
-              onClick={() => makeLogin(user.name)}
-              className="bg-teal-500 text-white px-3 py-2 rounded-md"
-              key={user.name}
-            >
-              {user.name}
-            </button>
-          );
-        })}
+        <div className="flex gap-4">
+          {users.map((user) => {
+            return (
+              <Button
+                type="button"
+                onClick={() => makeLogin(user.name)}
+                key={user.name}
+              >
+                {user.name}
+              </Button>
+            );
+          })}
+        </div>
       </div>
 
-      <div>OR</div>
+      <Text as="p" className="mt-2">
+        OR
+      </Text>
 
-      <div>
-        <Link
-          href="/admin"
-          className="px-3 py-2 bg-teal-500 text-white rounded-md hover:scale-105 transition-all duration-150 block"
-        >
-          Entrar no modo admin
-        </Link>
-      </div>
+      <Link href="/admin">Send notifications</Link>
 
-      <div>
-        <Link
-          href="/notify"
-          className="px-3 py-2 bg-teal-500 text-white rounded-md hover:scale-105 transition-all duration-150 block"
-        >
-          Entrar no modo ver todas notificações
-        </Link>
-      </div>
+      <Button
+        type="button"
+        className="mt-2"
+        onClick={() => destroyAllNotifications()}
+      >
+        destroy all notifications
+      </Button>
     </div>
   );
 }

@@ -1,8 +1,9 @@
 import { ApiService } from "@/core/apiService";
-import { IUser } from "@/core/hooks/useGetUsers";
+import { IUser } from "./useGetUsers";
 import { useState, useEffect } from "react";
 
 export interface INotify {
+  id: string;
   title: string;
   content: string;
   users: IUser[];

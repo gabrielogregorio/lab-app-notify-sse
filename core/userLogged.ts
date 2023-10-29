@@ -9,7 +9,7 @@ export class UserLogged {
     return localStorage.setItem(keyUserLogged, user);
   }
 
-  static loggout(): void {
+  static logout(): void {
     localStorage.removeItem(keyUserLogged);
   }
 }
