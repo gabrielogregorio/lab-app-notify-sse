@@ -1,10 +1,10 @@
 import { useState, FormEvent } from "react";
 import { ApiService } from "@/core/apiService";
-import { UsersAvailable } from "../components/usersAvailable";
 import { Button } from "../components/button";
 import { UserLogged } from "../core/userLogged";
 import { useRouter } from "next/router";
 import { Text } from "../components/text";
+import { UsersAvailable } from "../components/UsersAvailable";
 
 export default function AddNotify() {
   const [title, setTitle] = useState("");
