@@ -8,7 +8,10 @@ type Props = {
 
 export const Link = ({ children, href }: Props) => {
   return (
-    <NextLink href={href} className="underline text-black block">
+    <NextLink
+      href={href}
+      className="underline text-black block hover:bg-black hover:text-white transition-all duration-150"
+    >
       {children}
     </NextLink>
   );

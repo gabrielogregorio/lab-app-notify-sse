@@ -4,16 +4,17 @@ import { Button } from "../components/button";
 import { UserLogged } from "../core/userLogged";
 import { useRouter } from "next/router";
 import { Text } from "../components/text";
-import { UsersAvailable } from "../components/UsersAvailable";
+import { useGetUsers } from "../core/useGetUsers";
 
 export default function AddNotify() {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+  const [title, setTitle] = useState("A title");
+  const [content, setContent] = useState("a body");
   const [usersTo, setUsersTo] = useState<string[]>([]);
   const router = useRouter();
   const [isSending, setIsSending] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState("");
+  const { users, usersError, usersIsLoading } = useGetUsers();
 
   const submitAddUser = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
@@ -47,6 +48,16 @@ export default function AddNotify() {
   const handleLogout = () => {
     UserLogged.logout();
     router.push("/");
+  };
+
+  const handleAddedName = (name: string) => {
+    setUsersTo((prev) => {
+      const newName = name.trim();
+      if (prev.includes(newName)) {
+        return prev.filter((item) => item !== newName);
+      }
+      return [...prev, newName];
+    });
   };
 
   return (
@@ -94,7 +105,42 @@ export default function AddNotify() {
         </label>
 
         <hr />
-        <UsersAvailable />
+        <div>
+          <Text as="h2" className="text-sm">
+            Choice a user to send notify
+          </Text>
+
+          <div>
+            {usersIsLoading ? (
+              <Text as="p" className="text-sm">
+                loading users available...
+              </Text>
+            ) : undefined}
+          </div>
+
+          <div>
+            {usersError ? (
+              <Text as="p" className="text-sm">
+                {usersError}
+              </Text>
+            ) : undefined}
+          </div>
+
+          <div className="flex gap-4">
+            {users.map((user) => {
+              return (
+                <Button
+                  type="button"
+                  key={user.name}
+                  className="select-none"
+                  onClick={() => handleAddedName(user.name)}
+                >
+                  {user.name}
+                </Button>
+              );
+            })}
+          </div>
+        </div>
 
         <label className="flex flex-col" htmlFor="usersTo">
           <Text as="p" className="text-sm">
@@ -124,7 +170,11 @@ export default function AddNotify() {
           </Text>
         ) : undefined}
 
-        {isSuccess ? <Text as="p">Sucess send notify</Text> : undefined}
+        {isSuccess ? (
+          <Text as="p" className="text-green-600">
+            Sucess send notify
+          </Text>
+        ) : undefined}
       </form>
     </main>
   );

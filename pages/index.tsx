@@ -5,10 +5,12 @@ import { useRouter } from "next/router";
 import { Button } from "../components/button";
 import { Text } from "../components/text";
 import { ApiService } from "../core/apiService";
+import { useState } from "react";
 
 export default function Login() {
   const router = useRouter();
   const { users, usersError, usersIsLoading } = useGetUsers();
+  const [destroyDone, setDestroIsDone] = useState<boolean>(false);
 
   const makeLogin = (user: string) => {
     UserLogged.set(user);
@@ -17,6 +19,11 @@ export default function Login() {
 
   const destroyAllNotifications = () => {
     ApiService.get("/clearNotify");
+    setDestroIsDone(true);
+
+    setTimeout(() => {
+      setDestroIsDone(false);
+    }, 2000);
   };
 
   return (
@@ -26,10 +33,24 @@ export default function Login() {
       </Text>
 
       <div className="mt-2">
-        <div>{usersIsLoading ? "loading users available..." : ""}</div>
-        <div>{usersError ? usersError : ""}</div>
+        <div>
+          {usersIsLoading ? (
+            <div className="flex gap-4 justify-center">
+              <p className="text-md text-md text-gray-400">
+                Wait starting free api...
+              </p>
+              <div className="h-6 w-6 rounded-full border-2 border-t-black animate-spin border-gray-300"></div>
+            </div>
+          ) : undefined}
+        </div>
 
-        <div className="flex gap-4">
+        <div>
+          {usersError ? (
+            <p className="text-red-400">{usersError}</p>
+          ) : undefined}
+        </div>
+
+        <div className="flex gap-4 mt-3">
           {users.map((user) => {
             return (
               <Button
@@ -48,14 +69,14 @@ export default function Login() {
         OR
       </Text>
 
-      <Link href="/admin">Send notifications</Link>
+      <Link href="/admin">Send notifications📨 </Link>
 
       <Button
         type="button"
         className="mt-2"
         onClick={() => destroyAllNotifications()}
       >
-        destroy all notifications
+        {destroyDone ? "done" : "destroy all notifications 💥"}
       </Button>
     </div>
   );
