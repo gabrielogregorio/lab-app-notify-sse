@@ -6,15 +6,6 @@ import { Button } from "../components/button";
 import { Text } from "../components/text";
 import { ApiService } from "../core/apiService";
 
-import dynamic from "next/dynamic";
-
-const Notify = dynamic(
-  () => import("notify/component/Notify").then((m) => m.Notify),
-  {
-    ssr: false,
-  }
-);
-
 export default function Login() {
   const router = useRouter();
   const { users, usersError, usersIsLoading } = useGetUsers();
@@ -58,8 +49,6 @@ export default function Login() {
       </Text>
 
       <Link href="/admin">Send notifications</Link>
-
-      <Notify />
 
       <Button
         type="button"
