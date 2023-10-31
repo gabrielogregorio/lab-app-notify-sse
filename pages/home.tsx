@@ -6,8 +6,15 @@ import { Text } from "../components/text";
 
 import dynamic from "next/dynamic";
 
-const Notify = dynamic<{ user: string }>(
+const NotifySse = dynamic<{ user: string }>(
   () => import("notify/component/Notify").then((m) => m.Notify),
+  {
+    ssr: false,
+  }
+);
+
+const NotifyWs = dynamic<{ user: string }>(
+  () => import("notify/component/Notify").then((m) => m.NotifyWs),
   {
     ssr: false,
   }
@@ -38,11 +45,23 @@ export default function Home() {
           Logout
         </Button>
 
-        <Text as="h1" className="text-xl">
-          Testing receiving notifications as {`'${user}'`}
-        </Text>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Text as="h1" className="text-xl">
+              {`[SSE]: `} Testing receiving notifications as {`'${user}'`}
+            </Text>
 
-        <Notify user={user} />
+            <NotifySse user={user} />
+          </div>
+
+          <div>
+            <Text as="h1" className="text-xl">
+              {`[WEB SOCKETS]: `} Testing receiving notifications as{" "}
+              {`'${user}'`}
+            </Text>
+            <NotifyWs user={user} />
+          </div>
+        </div>
       </div>
     </main>
   );
